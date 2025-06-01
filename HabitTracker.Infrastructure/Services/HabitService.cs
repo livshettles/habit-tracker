@@ -1,6 +1,6 @@
 ﻿using HabitTracker.Application.DTOs;
 using HabitTracker.Application.Interfaces;
-using HabitTracker.Domain.Entities;
+using HabitTracker.Domain.Entities.Habits;
 using HabitTracker.Infrastructure.Db;
 using Microsoft.EntityFrameworkCore;
 

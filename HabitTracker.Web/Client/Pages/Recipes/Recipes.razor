@@ -1,0 +1,31 @@
+﻿@page "/recipes"
+@inject HttpClient Http
+@using HabitTracker.Domain.Entities.Recipes
+
+<h1>Recipes</h1>
+
+@if (recipes == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var recipe in recipes)
+        {
+            <li>
+                <a href=$"/recipes/{recipe.Id}">@recipe.Title</a>
+            </li>
+        }
+    </ul>
+    <a class="btn btn-primary" href="/recipes/new">➕ Add New</a>
+}
+
+@code {
+    List<Recipe>? recipes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        recipes = await Http.GetFromJsonAsync<List<Recipe>>("api/recipe");
+    }
+}

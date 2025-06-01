@@ -1,4 +1,4 @@
-﻿namespace HabitTracker.Domain.Entities;
+﻿namespace HabitTracker.Domain.Entities.Habits;
 
 public class Habit
 {
