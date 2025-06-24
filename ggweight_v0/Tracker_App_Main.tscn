@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://cjxlxax5ye41k"]
+
+[ext_resource type="PackedScene" uid="uid://c0pqk6800iima" path="res://editable_table.tscn" id="1_w55hq"]
+[ext_resource type="PackedScene" uid="uid://dkoxcccrmiil5" path="res://Graph_Main.tscn" id="2_kd57b"]
+[ext_resource type="Script" uid="uid://bhqnpgmftucfb" path="res://table_data.gd" id="3_mfg28"]
+
+[node name="Tracker_App" type="Node2D"]
+
+[node name="EditableTable" parent="." instance=ExtResource("1_w55hq")]
+offset_left = 658.0
+offset_top = 24.0
+offset_right = 953.0
+offset_bottom = 63.0
+
+[node name="Graph" parent="." instance=ExtResource("2_kd57b")]
+position = Vector2(1, 12)
+
+[node name="DataStore" type="Node" parent="."]
+script = ExtResource("3_mfg28")
