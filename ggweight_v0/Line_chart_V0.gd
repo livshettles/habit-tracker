@@ -313,7 +313,7 @@ func _process(delta):
 
 	$line_plot.set_points_2(visible_line)
 	queue_redraw()  # Tells Godot to call _draw()
-	print(visible_line.size(), " ", t)
+	#print(visible_line.size(), " ", t)
 	
 
 	#for p in points:
