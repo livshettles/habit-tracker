@@ -7,13 +7,18 @@ var undo_stack: Array = []
 
 func _ready():
 	# Initialize with one row
-	add_row()
+	table_data.append(["2025-06-27", "20:12:23", "55"])
+	table_data.append(["2025-06-28", "16:35:23", "44"])
+	table_data.append(["2025-06-30", "10:12:23", "63"])
+	# add_row()
+	pass
 
 func get_data() -> Array:
 	return table_data
 
 func add_row():
 	_push_undo_state()
+	
 	var now = Time.get_datetime_dict_from_system()
 	var date = "%04d-%02d-%02d" % [now["year"], now["month"], now["day"]]
 	var time = "%02d:%02d:%02d" % [now["hour"], now["minute"], now["second"]]
@@ -21,6 +26,7 @@ func add_row():
 	emit_signal("data_changed")
 
 func remove_last_row():
+	#TO DO _release_all_lineedit_focus()
 	if table_data.size() > 0:
 		_push_undo_state()
 		table_data.pop_back()

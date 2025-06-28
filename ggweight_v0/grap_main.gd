@@ -9,6 +9,7 @@ func _ready():
 	chart.pivot_offset = Vector2(0, 0)
 
 func _handle_chart_toggle(toggled_on: bool, animate_chart: bool) -> void:
+
 	if animate_chart:
 		var tween = get_tree().create_tween()
 

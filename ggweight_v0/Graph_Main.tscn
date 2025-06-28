@@ -59,7 +59,7 @@ _data = {
 script = ExtResource("1_uu6xs")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-root_node = NodePath("../Simple Toggle")
+root_node = NodePath("../Simple_Animation_Player_Toggle")
 libraries = {
 &"": SubResource("AnimationLibrary_r0du0")
 }
@@ -76,7 +76,7 @@ offset_bottom = 406.0
 grow_horizontal = 2
 metadata/_edit_use_anchors_ = true
 
-[node name="Simple Toggle" type="CheckButton" parent="."]
+[node name="Simple_Animation_Player_Toggle" type="CheckButton" parent="."]
 offset_left = 61.0
 offset_top = 7.0
 offset_right = 260.0
@@ -90,5 +90,12 @@ offset_right = 252.0
 offset_bottom = 80.0
 text = "Smooth Appear"
 
-[connection signal="toggled" from="Simple Toggle" to="." method="_on_check_button_toggled"]
+[node name="Label" type="Label" parent="."]
+offset_left = 279.0
+offset_top = 11.0
+offset_right = 441.0
+offset_bottom = 34.0
+text = "Now broken sorry lol"
+
+[connection signal="toggled" from="Simple_Animation_Player_Toggle" to="." method="_on_check_button_toggled"]
 [connection signal="toggled" from="Smooth_Toggle" to="." method="_on_check_smooth_button_toggled"]

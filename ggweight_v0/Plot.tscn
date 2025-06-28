@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b24tbqxcq3npu"]
 
 [ext_resource type="Script" uid="uid://bk2vcfyvr874h" path="res://Line_chart_V0.gd" id="1_75luo"]
-[ext_resource type="Script" path="res://line_plot.gd" id="2_cvtg2"]
+[ext_resource type="Script" uid="uid://yt61ntgdyruy" path="res://line_plot.gd" id="2_cvtg2"]
 
 [node name="Line_Chart_v0" type="GridContainer"]
 offset_right = 519.0

@@ -32,7 +32,11 @@ var draw_speed := 1000  # pixels per second
 var current_index := 0
 var t := 0.0
 
-var data = [
+@onready var data_store = get_parent().get_parent().get_node("DataStore")  # 👈 sibling node
+
+var data = []
+
+var data_old = [
 	{'x': 'MON', 'y': 7.0},
 	{'x': 'TUE', 'y': 8.0},
 	{'x': 'WED', 'y': 3.0},
@@ -43,6 +47,12 @@ var data = [
 ]
 
 func _ready():
+	
+	_create_data() #will update this to a "get data" at some point
+	
+	data_store.data_changed.connect(Callable(self, "draw_graph_line_step_by_step_V2"))
+
+	
 	$x_label.text = x_label
 	$y_label.text = y_label
 	$"line_plot/Chart BG".color = bg_color
@@ -56,6 +66,8 @@ func _ready():
 	"axis_thickness": axis_thickness
 	})
 	# Detect numerical axes
+	
+
 	for val in data:
 		if not [TYPE_INT, TYPE_FLOAT].has(typeof(val['x'])):
 			x_numerical = false
@@ -81,10 +93,28 @@ func _ready():
 		x_tick.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		x_tick.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		if x_numerical:
-			x_tick.text = str(round(i * (max_x - min_x) / (x_ticks - 1) + min_x))
+			#x_tick.text = str(round(i * (max_x - min_x) / (x_ticks - 1) + min_x))
+			#var dt = Time.get_datetime_dict_from_unix_time(data[i]['x'])
+			#x_tick.text = "%02d-%02d %02d:%02d" % [dt.month, dt.day, dt.hour, dt.minute]
+			var x_tick_val = round(i * (max_x - min_x) / (x_ticks - 1) + min_x)
+			var dt = Time.get_datetime_dict_from_unix_time(x_tick_val)
+			#x_tick.text = "%02d-%02d %02d:%02d" % [dt.month, dt.day, dt.hour, dt.minute]
+			x_tick.text = "%02d-%02d" % [dt.month, dt.day]
+			
+			await get_tree().process_frame  # Ensure layout is calculated
+
+			x_tick.pivot_offset = Vector2(x_tick.size.x / 2, x_tick.size.y / 2)
+			x_tick.rotation_degrees = -85
+
+			x_tick.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+			x_tick.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		else:
 			x_tick.text = str(data[i]['x'])
 		$x_ticks_cont.add_child(x_tick)
+
+
+
+
 
 	# Tick labels: Y
 	for i in range(y_ticks - 1, -1, -1):
@@ -121,6 +151,27 @@ func _ready():
 	#$line_plot.set_points(plot_points)
 	
 
+func _create_data():
+	#data = [
+	#{'x': 1, 'y': 7.0},
+	#{'x': 2, 'y': 8.0},
+	#{'x': 3, 'y': 3.0},
+	#{'x': 3.5, 'y': 5.0},
+	#{'x': 4, 'y': 4.0},
+	#{'x': 4.5, 'y': 6.0},
+	#{'x': 6, 'y': 1.0}, 
+	#]
+	var table_data = data_store.table_data
+	#print(table_data)
+	data = []
+	
+	for entry in table_data: 
+		var datetime_str = entry[0] + " " + entry[1]  # "2025-06-27 20:12:23"
+		var timestamp = Time.get_unix_time_from_datetime_string(datetime_str)
+		data.append({'x': timestamp, 'y': float(entry[2])})
+	print(data)
+	pass
+
 func draw_graph_line_step_by_step(plot_points):
 	animated_points.clear()
 	all_points.clear()
@@ -141,14 +192,92 @@ func draw_graph_line_step_by_step(plot_points):
 			#await get_tree().create_timer(0.25).timeout
 			#print("hello", points.size(), temp_pts.size())
 
-func draw_graph_line_step_by_step_V2(plot_points):
+func draw_graph_line_step_by_step_V2():
+	_create_data() #will update this to a "get data" at some point
+	
+	# Clear all X-axis tick labels
+	for child in $x_ticks_cont.get_children():
+		child.queue_free()
+
+	# Clear all Y-axis tick labels
+	for child in $y_ticks_cont.get_children():
+		child.queue_free()
+	
+	# Compute min/max
+	min_x = null
+	max_x = null
+	min_y = null
+	max_y = null
+	
+	for i in range(data.size()):
+		var x_val = get_val(data[i]['x'], i)
+		var y_val = get_val(data[i]['y'], i)
+		if min_x == null or x_val < min_x:
+			min_x = x_val
+		if max_x == null or x_val > max_x:
+			max_x = x_val
+		if min_y == null or y_val < min_y:
+			min_y = y_val
+		if max_y == null or y_val > max_y:
+			max_y = y_val
+
+	# Tick labels: X
+	for i in range(x_ticks):
+		var x_tick = Label.new()
+		x_tick.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		x_tick.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		if x_numerical:
+			#x_tick.text = str(round(i * (max_x - min_x) / (x_ticks - 1) + min_x))
+			#var dt = Time.get_datetime_dict_from_unix_time(data[i]['x'])
+			#x_tick.text = "%02d-%02d %02d:%02d" % [dt.month, dt.day, dt.hour, dt.minute]
+			var x_tick_val = round(i * (max_x - min_x) / (x_ticks - 1) + min_x)
+			var dt = Time.get_datetime_dict_from_unix_time(x_tick_val)
+			#x_tick.text = "%02d-%02d %02d:%02d" % [dt.month, dt.day, dt.hour, dt.minute]
+			x_tick.text = "%02d-%02d" % [dt.month, dt.day]
+			
+			await get_tree().process_frame  # Ensure layout is calculated
+
+			x_tick.pivot_offset = Vector2(x_tick.size.x / 2, x_tick.size.y / 2)
+			x_tick.rotation_degrees = -85
+
+			x_tick.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+			x_tick.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		else:
+			x_tick.text = str(data[i]['x'])
+		$x_ticks_cont.add_child(x_tick)
+
+	# Tick labels: Y
+	for i in range(y_ticks - 1, -1, -1):
+		var y_tick = Label.new()
+		y_tick.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		y_tick.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		if y_numerical:
+			y_tick.text = str(round(i * (max_y - min_y) / (y_ticks - 1) + min_y))
+		else:
+			y_tick.text = str(data[y_ticks - i - 1]['y'])
+		$y_ticks_cont.add_child(y_tick)
+
+	# Wait one frame so Control layout is correct
+	await get_tree().process_frame
+
+	var plot_points := PackedVector2Array()
+	for i in range(data.size()):
+		var x_val = get_val(data[i]['x'], i)
+		var y_val = get_val(data[i]['y'], i)
+		var px = scale_x(x_val)
+		var py = scale_y(y_val)
+		plot_points.append(Vector2(px, py))
+	
+	$line_plot.set_grid(x_ticks, y_ticks)
+	all_points = plot_points
+	#var plot_points = all_points
 	drawing = true
-	new_interp = true
 	current_index = 0
 	visible_line = []
 	t = 0.0 #interp variable
-	visible_line.append(plot_points[0])
-	set_process(true)
+	if(plot_points.size()>0):
+		visible_line.append(plot_points[0])
+		set_process(true)
 	
 func _process(delta):
 	if !drawing:
@@ -211,4 +340,4 @@ func get_val(val, idx: int) -> float:
 	return idx
 
 func _on_do_something(): 
-	await draw_graph_line_step_by_step_V2(all_points)
+	await draw_graph_line_step_by_step_V2()
