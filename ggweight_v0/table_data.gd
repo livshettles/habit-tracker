@@ -38,12 +38,14 @@ func update_cell(row: int, col: int, value: String):
 	
 	if row < table_data.size() and col < table_data[row].size():
 		var user_input = [table_data[row][0], table_data[row][1], value]
-		is_valid_datetime(user_input)
-		print(is_valid_datetime(user_input))
-		if table_data[row][col] != value:
-			_push_undo_state()
-			table_data[row][col] = value
-			emit_signal("data_changed")
+		_push_undo_state()
+		if(is_valid_datetime(user_input)):
+			print(is_valid_datetime(user_input))
+			if table_data[row][col] != value:
+				table_data[row][col] = value
+				emit_signal("data_changed")
+		else: 
+			undo()
 
 func undo():
 	if undo_stack.size() > 0:
