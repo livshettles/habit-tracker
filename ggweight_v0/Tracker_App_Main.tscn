@@ -6,6 +6,9 @@
 
 [node name="Tracker_App" type="Node2D"]
 
+[node name="DataStore" type="Node" parent="."]
+script = ExtResource("3_mfg28")
+
 [node name="EditableTable" parent="." instance=ExtResource("1_w55hq")]
 offset_left = 658.0
 offset_top = 24.0
@@ -13,7 +16,3 @@ offset_right = 953.0
 offset_bottom = 63.0
 
 [node name="Graph" parent="." instance=ExtResource("2_kd57b")]
-position = Vector2(1, 12)
-
-[node name="DataStore" type="Node" parent="."]
-script = ExtResource("3_mfg28")
