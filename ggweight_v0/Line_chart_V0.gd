@@ -36,16 +36,6 @@ var t := 0.0
 
 var data = []
 
-var data_old = [
-	{'x': 'MON', 'y': 7.0},
-	{'x': 'TUE', 'y': 8.0},
-	{'x': 'WED', 'y': 3.0},
-	{'x': 'THU', 'y': 5.0},
-	{'x': 'FRI', 'y': 4.0},
-	{'x': 'SAT', 'y': 6.0},
-	{'x': 'SUN', 'y': 1.0},
-]
-
 func _ready():
 	
 	_create_data() #will update this to a "get data" at some point
@@ -152,25 +142,14 @@ func _ready():
 	
 
 func _create_data():
-	#data = [
-	#{'x': 1, 'y': 7.0},
-	#{'x': 2, 'y': 8.0},
-	#{'x': 3, 'y': 3.0},
-	#{'x': 3.5, 'y': 5.0},
-	#{'x': 4, 'y': 4.0},
-	#{'x': 4.5, 'y': 6.0},
-	#{'x': 6, 'y': 1.0}, 
-	#]
+
 	var table_data = data_store.table_data
-	#print(table_data)
 	data = []
 	
 	for entry in table_data: 
-		var datetime_str = entry[0] + " " + entry[1]  # "2025-06-27 20:12:23"
+		var datetime_str = entry[0] + " " + entry[1] +":00" # the +":00" is to make the function accept the right time
 		var timestamp = Time.get_unix_time_from_datetime_string(datetime_str)
 		data.append({'x': timestamp, 'y': float(entry[2])})
-	print(data)
-	pass
 
 func draw_graph_line_step_by_step(plot_points):
 	animated_points.clear()
@@ -288,21 +267,23 @@ func _process(delta):
 		set_process(false) #kill the process
 		return
 
-	var p1
-	var p2
-	if(new_interp):
-		p1 = all_points[current_index]
-		p2 = all_points[current_index + 1]
-	else: 
-		p1 = all_points[current_index]
-		p2 = all_points[current_index + 1]
+	var p1 = all_points[current_index]
+	var p2 = all_points[current_index + 1]
 	var dist = p1.distance_to(p2)
-	t += delta * draw_speed / dist
+	
+	if(dist != 0): 
+		t += delta * draw_speed / dist
+	else: 
+		t = 2 #no need to interp in the first place
+		visible_line.append(p2)
 
 	if t >= 1.0:
 		t = 0.0
 		current_index += 1
-		visible_line[current_index] = all_points[current_index]
+		if(visible_line.size() < all_points.size()): 
+			visible_line.append(all_points[current_index])
+		else:
+			visible_line[current_index] = all_points[current_index]
 		new_interp = true
 	else:
 		var interp_point = p1.lerp(p2, t)

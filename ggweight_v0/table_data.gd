@@ -7,9 +7,9 @@ var undo_stack: Array = []
 
 func _ready():
 	# Initialize with one row
-	table_data.append(["2025-06-27", "20:12:23", "55"])
-	table_data.append(["2025-06-28", "16:35:23", "44"])
-	table_data.append(["2025-06-30", "10:12:23", "63"])
+	table_data.append(["2025-06-27", "20:12", "55.7"])
+	table_data.append(["2025-06-28", "16:35", "44.1"])
+	table_data.append(["2025-06-30", "10:12", "63.5"])
 	# add_row()
 	pass
 
@@ -21,8 +21,15 @@ func add_row():
 	
 	var now = Time.get_datetime_dict_from_system()
 	var date = "%04d-%02d-%02d" % [now["year"], now["month"], now["day"]]
-	var time = "%02d:%02d:%02d" % [now["hour"], now["minute"], now["second"]]
-	table_data.append([date, time, ""])
+	#var time = "%02d:%02d:%02d" % [now["hour"], now["minute"], now["second"]]
+	var time = "%02d:%02d" % [now["hour"], now["minute"]] # definitely don't need seconds...
+	#table_data.append([date, time, ""])
+	#lets add the last entry as a default value for the new row...
+	if(table_data.size()>0):
+			table_data.append([date, time, table_data[-1][-1]])
+	else: 
+		table_data.append([date, time, ""])
+	
 	emit_signal("data_changed")
 
 func remove_last_row():
@@ -34,13 +41,17 @@ func remove_last_row():
 
 func update_cell(row: int, col: int, value: String):
 	
-	
-	
 	if row < table_data.size() and col < table_data[row].size():
-		var user_input = [table_data[row][0], table_data[row][1], value]
+		var user_input = [table_data[row][0], table_data[row][1], table_data[row][2]]
+		if(col == 0):
+			user_input = [value, table_data[row][1]+":00", table_data[row][2]]
+		elif(col == 1): 
+			user_input = [table_data[row][0], value+":00", table_data[row][2]]
+		else: 
+			user_input = [table_data[row][0], table_data[row][1]+":00", value]
 		_push_undo_state()
+		print(is_valid_datetime(user_input))
 		if(is_valid_datetime(user_input)):
-			print(is_valid_datetime(user_input))
 			if table_data[row][col] != value:
 				table_data[row][col] = value
 				emit_signal("data_changed")

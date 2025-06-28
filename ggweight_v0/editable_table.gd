@@ -48,7 +48,7 @@ func _refresh_table():
 	for row in table_data.size():
 		for col in range(NUM_COLUMNS):
 			var input = LineEdit.new()
-			print(table_data[row][col])
+			#print(table_data[row][col])
 			input.text = table_data[row][col]
 			input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			input.custom_minimum_size = Vector2(140, 24)
@@ -77,12 +77,8 @@ func _on_focus_exited(line_edit: LineEdit):
 		var col = line_edit.get_meta("col")
 		var new_text = line_edit.text
 		
-		
 		if data_store.table_data[row][col] != new_text:
 			data_store.update_cell(row, col, new_text)
-
-
-
 
 # 🖱️ Lose focus when clicking outside
 func _unhandled_input(event):
