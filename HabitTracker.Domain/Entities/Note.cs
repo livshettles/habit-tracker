@@ -3,7 +3,7 @@ using HabitTracker.Domain.ValueObjects;
 
 namespace HabitTracker.Domain.Entities;
 
-public class Note : IAuditable, ISoftDeletable
+public class Note
 {
     protected Note() { }
 
@@ -23,8 +23,6 @@ public class Note : IAuditable, ISoftDeletable
     public EntryMetadata Entry { get; private set; } = new();
 
     public bool IsDeleted { get; set; }
-    public DateTime CreateDate { get; set; }
-    public DateTime? ModifiedDate { get; set; }
 
     public void UpdateContent(string title, string content)
     {

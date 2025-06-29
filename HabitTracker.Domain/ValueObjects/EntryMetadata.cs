@@ -1,6 +1,8 @@
-﻿namespace HabitTracker.Domain.ValueObjects;
+﻿using HabitTracker.Domain.Common;
 
-public class EntryMetadata
+namespace HabitTracker.Domain.ValueObjects;
+
+public class EntryMetadata : IAuditable, ISoftDeletable
 {
     public Guid Id { get; set; } = Guid.NewGuid();
 
@@ -10,8 +12,9 @@ public class EntryMetadata
 
     public DateTime CreateDate { get; set; } = DateTime.UtcNow;
 
+    public DateTime? ModifiedDate { get; set; }
+
     public string CreateUserId { get; set; } = string.Empty;
 
-    public bool IsEmpty() =>
-        string.IsNullOrWhiteSpace(Content);
+    public bool IsDeleted { get; set; }
 }
