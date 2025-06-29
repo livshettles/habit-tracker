@@ -1,10 +1,46 @@
-[gd_scene load_steps=4 format=3 uid="uid://cjxlxax5ye41k"]
+[gd_scene load_steps=11 format=3 uid="uid://cjxlxax5ye41k"]
 
+[ext_resource type="Script" uid="uid://bufmtxorpe8c5" path="res://tracker_app_main.gd" id="1_g3yff"]
 [ext_resource type="PackedScene" uid="uid://c0pqk6800iima" path="res://editable_table.tscn" id="1_w55hq"]
 [ext_resource type="PackedScene" uid="uid://dkoxcccrmiil5" path="res://Graph_Main.tscn" id="2_kd57b"]
+[ext_resource type="Shader" uid="uid://drpncjuwjlsk0" path="res://Shaders/Nebula.gdshader" id="2_yft5x"]
 [ext_resource type="Script" uid="uid://bhqnpgmftucfb" path="res://table_data.gd" id="3_mfg28"]
+[ext_resource type="Texture2D" uid="uid://ccdkg8a1nf127" path="res://textures/NoisePattern-220722-1826-55cm-detail.jpg" id="3_mfium"]
+[ext_resource type="Texture2D" uid="uid://cuieap5g6wssh" path="res://textures/change-colorful-vector-typography-banner-260nw-1929214505.webp" id="6_yft5x"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_64dcf"]
+shader = ExtResource("2_yft5x")
+shader_parameter/stars_on = true
+shader_parameter/timeScaleFactor = 1.0
+shader_parameter/noise_texture = ExtResource("3_mfium")
+shader_parameter/colour_muiltiplier = Color(0.180392, 1, 0.698039, 1)
+shader_parameter/colour_muiltiplier2 = Color(1, 0, 0.964706, 1)
+shader_parameter/brightness = 0.85
+shader_parameter/clouds_resolution = 10.0
+shader_parameter/clouds_intesity = 0.0
+shader_parameter/waveyness = 0.25
+shader_parameter/fragmentation = 20.0
+shader_parameter/distortion = 0.25
+shader_parameter/clouds_alpha = 0.4
+shader_parameter/movement = 1.3
+shader_parameter/blur = 10.0
+shader_parameter/blur2 = 0.0026
+
+[sub_resource type="Gradient" id="Gradient_g3yff"]
+offsets = PackedFloat32Array(0.519481, 0.688312, 1)
+colors = PackedColorArray(0.519481, 0.519481, 0.519481, 1, 0.688312, 0.688312, 0.688312, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_yft5x"]
+gradient = SubResource("Gradient_g3yff")
 
 [node name="Tracker_App" type="Node2D"]
+script = ExtResource("1_g3yff")
+
+[node name="Background" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_64dcf")
+offset_right = 1152.0
+offset_bottom = 648.0
+texture = SubResource("GradientTexture1D_yft5x")
 
 [node name="DataStore" type="Node" parent="."]
 script = ExtResource("3_mfg28")
@@ -16,3 +52,13 @@ offset_right = 953.0
 offset_bottom = 63.0
 
 [node name="Graph" parent="." instance=ExtResource("2_kd57b")]
+
+[node name="TextureButton" type="TextureButton" parent="."]
+offset_left = 488.0
+offset_top = 16.0
+offset_right = 1355.0
+offset_bottom = 296.0
+scale = Vector2(0.13, 0.13)
+texture_normal = ExtResource("6_yft5x")
+
+[connection signal="pressed" from="TextureButton" to="." method="_on_texture_button_pressed"]
