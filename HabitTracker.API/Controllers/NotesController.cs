@@ -36,10 +36,10 @@ public class NotesController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public IActionResult Get(Guid id)
+    public ActionResult Get(Guid id)
     {
         // var note = await _noteService.GetByIdAsync(id);
-        var note = new Note("livshettles", string.Empty, string.Empty);
+        var note = new Note("livshettles", string.Empty, "bitches aint shit");
 
         return note is null ? NotFound() : Ok(note);
     }
@@ -49,6 +49,21 @@ public class NotesController : ControllerBase
     {
         await _noteService.DeleteAsync(id);
         return NoContent();
+    }
+
+    [HttpGet("user/{userId}")]
+    public ActionResult GetByUser(string userId)
+    {
+        // var notes = await _noteService.GetByUserAsync(userId);
+        var notes = new List<Note>
+        {
+            new Note("livshettles", "Grocery List", "milk, brownies, your mom"),
+            new Note("LUNA", "FOOD", "HILP"),
+            new Note("CakelessWarrior", "Meow", "My sauce is weak"),
+            new Note("livshettles", string.Empty, "sleep")
+        };
+
+        return Ok(notes);
     }
 }
 

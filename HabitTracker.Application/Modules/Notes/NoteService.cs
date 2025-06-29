@@ -39,7 +39,7 @@ public class NoteService : INoteService
         var note = await _repository.GetByIdAsync(id);
         if (note is not null)
         {
-            note.Delete(); // Soft delete
+            // note.Delete(); // TO DO Soft delete
             await _repository.DeleteAsync(note);
         }
     }

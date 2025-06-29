@@ -22,8 +22,6 @@ public class Note
 
     public EntryMetadata Entry { get; private set; } = new();
 
-    public bool IsDeleted { get; set; }
-
     public void UpdateContent(string title, string content)
     {
         if (string.IsNullOrWhiteSpace(content))
@@ -31,10 +29,5 @@ public class Note
 
         Entry.Title = title;
         Entry.Content = content;
-    }
-
-    public void Delete()
-    {
-        IsDeleted = true;
     }
 }
