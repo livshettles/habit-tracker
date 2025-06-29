@@ -1,6 +1,6 @@
 ﻿@page "/recipes"
 @inject HttpClient Http
-@using HabitTracker.Domain.Entities.Recipes
+@using HabitTracker.Domain.Entities
 
 <h1>Recipes</h1>
 
@@ -14,7 +14,7 @@ else
         @foreach (var recipe in recipes)
         {
             <li>
-                <a href=$"/recipes/{recipe.Id}">@recipe.Title</a>
+                <a href=$"/recipes/{recipe.Id}">@recipe.Entry.Title</a>
             </li>
         }
     </ul>

@@ -1,14 +1,16 @@
-using HabitTracker.Application.Interfaces;
-using HabitTracker.Infrastructure.Db;
-using HabitTracker.Infrastructure.Services;
+using HabitTracker.Application.Notes;
+using HabitTracker.Domain.Repositories;
+using HabitTracker.Infrastructure.Persistence;
+using HabitTracker.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<HabitDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseInMemoryDatabase("HabitTrackerTestDb"));
 
-builder.Services.AddScoped<IHabitService, HabitService>();
+builder.Services.AddScoped<INoteRepository, NoteRepository>();
+builder.Services.AddScoped<INoteService, NoteService>();
 
 builder.Services.AddCors(options =>
 {
